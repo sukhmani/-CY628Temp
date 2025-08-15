@@ -1,10 +1,10 @@
-# 🚀 Azure Resource Deployment – HOS06 Template
+#  Azure Resource Deployment – HOS06 Template
 
 This repository contains an ARM template to deploy a Windows virtual machine with networking resources in Azure. It is designed for students and developers working on the HOS06 lab assignment.
 
 ---
 
-## 📦 Resources Deployed
+##  Resources Deployed
 
 - Virtual Network (`studentVNet`)
 - Subnet (`studentSubnet`)
@@ -14,7 +14,7 @@ This repository contains an ARM template to deploy a Windows virtual machine wit
 
 ---
 
-## 🔘 One-Click Deployment
+##  One-Click Deployment
 
 Click the button below to deploy the template directly from GitHub using the Azure portal:
 
@@ -22,7 +22,7 @@ Click the button below to deploy the template directly from GitHub using the Azu
 
 ---
 
-## 🛠️ Manual Deployment via Azure CLI
+## Manual Deployment via Azure CLI
 
 ```bash
 az deployment group create \
