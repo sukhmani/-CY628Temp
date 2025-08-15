@@ -2,37 +2,97 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "vmName": {
-      "type": "string",
-      "defaultValue": "studentVM"
-    },
     "adminUsername": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "azureuser",
+      "metadata": {
+        "description": "Admin username for the VM."
+      }
     },
     "adminPassword": {
-      "type": "securestring"
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password for the VM."
+      }
     }
   },
   "resources": [
     {
-      "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2023-03-01",
-      "name": "[parameters('vmName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2020-06-01",
+      "name": "studentVNet",
       "location": "[resourceGroup().location]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": ["10.0.0.0/16"]
+        },
+        "subnets": [
+          {
+            "name": "studentSubnet",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2020-06-01",
+      "name": "studentPublicIP",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2020-06-01",
+      "name": "studentVM-nic",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "studentVNet",
+        "studentPublicIP"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', 'studentVNet', 'studentSubnet')]"
+              },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', 'studentPublicIP')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2021-07-01",
+      "name": "studentVM",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "studentVM-nic"
+      ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "Standard_B1s"
         },
         "osProfile": {
-          "computerName": "[parameters('vmName')]",
+          "computerName": "studentVM",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "Canonical",
-            "offer": "UbuntuServer",
-            "sku": "18.04-LTS",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2019-Datacenter",
             "version": "latest"
           },
           "osDisk": {
@@ -40,7 +100,11 @@
           }
         },
         "networkProfile": {
-          "networkInterfaces": []
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', 'studentVM-nic')]"
+            }
+          ]
         }
       }
     }
