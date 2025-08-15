@@ -1,20 +1,31 @@
-# -CY628Temp
-# Azure ARM Template Deployment via GitHub Actions
+# 🚀 Azure Resource Deployment – HOS06 Template
 
-This repo deploys a simple Ubuntu VM using an ARM template and GitHub Actions.
+This repository contains an ARM template to deploy a Windows virtual machine with networking resources in Azure. It is designed for students and developers working on the HOS06 lab assignment.
 
-## 📁 Files
+---
 
-- `azuredeploy.json`: ARM template
-- `parameters.json`: Deployment parameters
-- `.github/workflows/deploy.yml`: GitHub Actions workflow
+## 📦 Resources Deployed
 
-## 🚀 Deployment
+- Virtual Network (`studentVNet`)
+- Subnet (`studentSubnet`)
+- Public IP (`studentPublicIP`)
+- Network Interface (`studentVM-nic`)
+- Windows Virtual Machine (`studentVM`)
 
-### Manual (Azure CLI)
+---
+
+## 🔘 One-Click Deployment
+
+Click the button below to deploy the template directly from GitHub using the Azure portal:
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsukhmani%2F-CY628Temp%2Fmain%2Fazuredeploy.json)
+
+---
+
+## 🛠️ Manual Deployment via Azure CLI
 
 ```bash
 az deployment group create \
-  --resource-group your-resource-group-name \
+  --resource-group sukhmani \
   --template-file azuredeploy.json \
-  --parameters @parameters.json
+  --parameters adminUsername='azureuser' adminPassword='YourSecureP@ssword123'
